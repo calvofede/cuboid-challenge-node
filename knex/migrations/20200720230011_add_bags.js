@@ -5,6 +5,7 @@ export const up = (knex) =>
     table.increments();
     table.timestamps();
     table.integer('volume');
+    table.string('title');
   });
 
 export const down = (knex) => knex.schema.dropTable(Bag.tableName);
