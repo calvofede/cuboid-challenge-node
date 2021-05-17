@@ -19,10 +19,11 @@ describe.each([
 
   beforeAll(async () => {
     cuboid = (
-      await Cuboid.query().insert({
+      await Cuboid.query().insertAndFetch({
         width,
         height,
         depth,
+        volume,
         bagId: bag.id,
       })
     ).toJSON();

@@ -49,8 +49,10 @@ describe.each([
 
   beforeAll(async () => {
     bag = (
-      await Bag.query().insert({
+      await Bag.query().insertAndFetch({
         volume,
+        payloadVolume,
+        availableVolume,
         title,
         cuboids,
       })

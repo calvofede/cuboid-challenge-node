@@ -5,6 +5,8 @@ export const up = (knex) =>
     table.increments();
     table.timestamps();
     table.integer('volume');
+    table.integer('payloadVolume').defaultTo('0');
+    table.integer('availableVolume');
     table.string('title');
   });
 
