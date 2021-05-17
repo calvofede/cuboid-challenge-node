@@ -74,9 +74,7 @@ export const update = async (req, res) => {
 };
 
 export const deleteCuboid = async (req, res) => {
-  const cuboid = await Cuboid.query()
-    .findById(req.params.id)
-    .withGraphFetched('bag');
+  const cuboid = await Cuboid.query().findById(req.params.id);
   if (!cuboid) {
     return res.sendStatus(HttpStatus.NOT_FOUND);
   }
@@ -84,8 +82,8 @@ export const deleteCuboid = async (req, res) => {
   const deleted = await Cuboid.query().deleteById(cuboid.id);
 
   if (deleted) {
-    return res.status(HttpStatus.OK);
+    return res.sendStatus(HttpStatus.OK);
   } else {
-    return res.status(HttpStatus.NOT_FOUND);
+    return res.sendStatus(HttpStatus.NOT_FOUND);
   }
 };

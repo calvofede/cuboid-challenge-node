@@ -166,7 +166,7 @@ describe('cuboid update', () => {
         bagId: bag.id,
       })
     );
-    cuboid = await Cuboid.query().insert(
+    cuboid = await Cuboid.query().insertAndFetch(
       factories.cuboid.build({
         width: 4,
         height: 4,
@@ -188,10 +188,10 @@ describe('cuboid update', () => {
       });
 
     expect(response.status).toBe(HttpStatus.OK);
-    expect(cuboid.width).toBe(newWidth);
-    expect(cuboid.height).toBe(newHeight);
-    expect(cuboid.depth).toBe(newDepth);
-    expect(cuboid.bagId).toBe(bag.id);
+    expect(response.body.width).toBe(newWidth);
+    expect(response.body.height).toBe(newHeight);
+    expect(response.body.depth).toBe(newDepth);
+    expect(response.body.bagId).toBe(bag.id);
   });
 
   it('should fail to update if insufficient capacity and return 400 status code', async () => {
@@ -213,29 +213,17 @@ describe('cuboid update', () => {
 });
 
 describe('cuboid delete', () => {
-  let bag;
-  let cuboid;
-
-  beforeEach(async () => {
-    bag = await Bag.query().insert(
-      factories.bag.build({
-        volume: 250,
-        title: 'A bag',
-      })
-    );
-    cuboid = await Cuboid.query().insert(
-      factories.cuboid.build({
-        width: 4,
-        height: 4,
-        depth: 4,
-        bagId: bag.id,
-      })
-    );
-  });
-
   it('should delete the cuboid', async () => {
+    const cuboid = factories.cuboid.build({
+      width: 4,
+      height: 4,
+      depth: 4,
+      bagId: '1',
+    });
+    const id = (await Cuboid.query().insert(cuboid)).id;
+
     const response = await request(server).delete(
-      urlJoin('/cuboid', cuboid.id.toString())
+      urlJoin('/cuboid', id.toString())
     );
 
     expect(response.status).toBe(HttpStatus.OK);

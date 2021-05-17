@@ -19,7 +19,7 @@ describe.each([
 
   beforeAll(async () => {
     cuboid = (
-      await Cuboid.query().insertAndFetch({
+      await Cuboid.query().insert({
         width,
         height,
         depth,
