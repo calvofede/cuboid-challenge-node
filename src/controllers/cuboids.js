@@ -1,4 +1,4 @@
-import HttpStatus, { BAD_GATEWAY } from 'http-status-codes';
+import HttpStatus from 'http-status-codes';
 import Cuboid from '../models/Cuboid';
 import Bag from '../models/Bag';
 import { byId } from './filters';

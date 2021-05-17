@@ -187,8 +187,6 @@ describe('cuboid update', () => {
         newDepth,
       });
 
-    cuboid = response.body;
-
     expect(response.status).toBe(HttpStatus.OK);
     expect(cuboid.width).toBe(newWidth);
     expect(cuboid.height).toBe(newHeight);
