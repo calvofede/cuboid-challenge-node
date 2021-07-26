@@ -51,6 +51,8 @@ describe.each([
     bag = (
       await Bag.query().insert({
         volume,
+        payloadVolume,
+        availableVolume,
         title,
         cuboids,
       })

@@ -166,7 +166,7 @@ describe('cuboid update', () => {
         bagId: bag.id,
       })
     );
-    cuboid = await Cuboid.query().insert(
+    cuboid = await Cuboid.query().insertAndFetch(
       factories.cuboid.build({
         width: 4,
         height: 4,
@@ -176,21 +176,34 @@ describe('cuboid update', () => {
     );
   });
 
-  it('should succeed to update the cuboid', () => {
+  it('should succeed to update the cuboid', async () => {
     const [newWidth, newHeight, newDepth] = [5, 5, 5];
-    const response = { body: {} };
-    cuboid = response.body;
+
+    const response = await request(server)
+      .put(urlJoin('/cuboid', cuboid.id.toString()))
+      .send({
+        newWidth,
+        newHeight,
+        newDepth,
+      });
 
     expect(response.status).toBe(HttpStatus.OK);
-    expect(cuboid.width).toBe(newWidth);
-    expect(cuboid.height).toBe(newHeight);
-    expect(cuboid.depth).toBe(newDepth);
-    expect(cuboid.bagId).toBe(bag.id);
+    expect(response.body.width).toBe(newWidth);
+    expect(response.body.height).toBe(newHeight);
+    expect(response.body.depth).toBe(newDepth);
+    expect(response.body.bagId).toBe(bag.id);
   });
 
-  it('should fail to update if insufficient capacity and return 400 status code', () => {
-    const [newWidth, newHeight, newDepth] = [6, 6, 6];
-    const response = { body: {} };
+  it('should fail to update if insufficient capacity and return 400 status code', async () => {
+    const [newWidth, newHeight, newDepth] = [7, 7, 7];
+
+    const response = await request(server)
+      .put(urlJoin('/cuboid', cuboid.id.toString()))
+      .send({
+        newWidth,
+        newHeight,
+        newDepth,
+      });
 
     expect(response.status).toBe(HttpStatus.BAD_REQUEST);
     expect(response.body.width).not.toBe(newWidth);
@@ -200,15 +213,24 @@ describe('cuboid update', () => {
 });
 
 describe('cuboid delete', () => {
-  it('should delete the cuboid', () => {
-    const response = {};
+  it('should delete the cuboid', async () => {
+    const cuboid = factories.cuboid.build({
+      width: 4,
+      height: 4,
+      depth: 4,
+      bagId: '1',
+    });
+    const id = (await Cuboid.query().insert(cuboid)).id;
+
+    const response = await request(server).delete(
+      urlJoin('/cuboid', id.toString())
+    );
 
     expect(response.status).toBe(HttpStatus.OK);
   });
 
-  it('should not delete and return 404 status code when cuboids doesnt exists', () => {
-    const response = {};
-
+  it('should not delete and return 404 status code when cuboids doesnt exists', async () => {
+    const response = await request(server).delete(urlJoin('/cuboid', '0'));
     expect(response.status).toBe(HttpStatus.NOT_FOUND);
   });
 });
